@@ -1,0 +1,487 @@
+/* ── Admin Layout ── */
+.page {
+  min-height: 100vh;
+  background: #0f0f13;
+  color: #e2e8f0;
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Top Bar ── */
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  height: 56px;
+  background: #16161e;
+  border-bottom: 1px solid #2a2a3a;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.topBarLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.topBarTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  letter-spacing: -0.01em;
+}
+
+.topBarTitle span {
+  color: #6366f1;
+}
+
+.viewSiteBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.875rem;
+  border-radius: 6px;
+  border: 1px solid #3b3b52;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.viewSiteBtn:hover {
+  color: #e2e8f0;
+  border-color: #6366f1;
+  background: rgba(99, 102, 241, 0.1);
+}
+
+/* ── Main Layout ── */
+.layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  width: 220px;
+  min-width: 220px;
+  background: #16161e;
+  border-right: 1px solid #2a2a3a;
+  padding: 1.25rem 0.875rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  overflow-y: auto;
+}
+
+.sidebarLabel {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #64748b;
+  margin-bottom: 0.5rem;
+  padding: 0 0.25rem;
+}
+
+.seriesBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.5rem 0.625rem;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  text-align: left;
+}
+
+.seriesBtn:hover {
+  background: rgba(99, 102, 241, 0.08);
+  color: #e2e8f0;
+}
+
+.seriesBtnActive {
+  background: rgba(99, 102, 241, 0.15);
+  color: #818cf8;
+}
+
+.videoCount {
+  margin-left: auto;
+  font-size: 0.75rem;
+  background: #2a2a3a;
+  color: #64748b;
+  border-radius: 99px;
+  padding: 0.1rem 0.5rem;
+}
+
+.newSeriesForm {
+  margin-top: auto;
+  padding-top: 1.25rem;
+  border-top: 1px solid #2a2a3a;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.textInput {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #2a2a3a;
+  background: #0f0f13;
+  color: #e2e8f0;
+  font-size: 0.8125rem;
+  outline: none;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+
+.textInput:focus {
+  border-color: #6366f1;
+}
+
+.textInput::placeholder {
+  color: #475569;
+}
+
+.createBtn {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: none;
+  background: #6366f1;
+  color: #fff;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.createBtn:hover {
+  background: #4f46e5;
+}
+
+.statusMsg {
+  font-size: 0.75rem;
+  color: #818cf8;
+  margin: 0;
+}
+
+/* ── Main Panel ── */
+.main {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.panelTitle {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin: 0 0 0.25rem;
+}
+
+.panelSub {
+  font-size: 0.8125rem;
+  color: #64748b;
+  margin: 0;
+}
+
+/* ── Section ── */
+.section {
+  margin-bottom: 2rem;
+}
+
+.sectionTitle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 0.875rem;
+}
+
+/* ── Drop Zone ── */
+.dropZone {
+  border: 2px dashed #2a2a3a;
+  border-radius: 10px;
+  padding: 2.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.dropZone:hover,
+.dragOver {
+  border-color: #6366f1;
+  background: rgba(99, 102, 241, 0.06);
+}
+
+.dropIcon {
+  color: #6366f1;
+  margin-bottom: 0.75rem;
+}
+
+.dropText {
+  color: #94a3b8;
+  font-size: 0.9375rem;
+  margin: 0 0 0.25rem;
+}
+
+.dropText span {
+  color: #818cf8;
+  font-weight: 600;
+}
+
+.dropSub {
+  color: #475569;
+  font-size: 0.8125rem;
+  margin: 0;
+}
+
+/* ── Queue ── */
+.queueBox {
+  margin-top: 1rem;
+  border: 1px solid #2a2a3a;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.queueHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: #16161e;
+  font-size: 0.8125rem;
+  color: #94a3b8;
+  border-bottom: 1px solid #2a2a3a;
+}
+
+.queueList {
+  display: flex;
+  flex-direction: column;
+}
+
+.queueItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.625rem 1rem;
+  border-bottom: 1px solid #1e1e2a;
+  gap: 1rem;
+}
+
+.queueItem:last-child {
+  border-bottom: none;
+}
+
+.queueItemInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.queueStatus {
+  font-size: 0.875rem;
+  font-weight: 700;
+  width: 18px;
+  text-align: center;
+}
+
+.pending { color: #475569; }
+.uploading { color: #6366f1; }
+.done { color: #22c55e; }
+.error { color: #ef4444; }
+
+.queueName {
+  font-size: 0.8125rem;
+  color: #cbd5e1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+
+.queueSize {
+  font-size: 0.75rem;
+  color: #475569;
+  white-space: nowrap;
+}
+
+.queueError {
+  font-size: 0.75rem;
+  color: #ef4444;
+  margin: 0;
+}
+
+.progressBar {
+  height: 4px;
+  background: #2a2a3a;
+  border-radius: 99px;
+  overflow: hidden;
+  width: 120px;
+  flex-shrink: 0;
+}
+
+.progressFill {
+  height: 100%;
+  background: #6366f1;
+  border-radius: 99px;
+  transition: width 0.2s;
+}
+
+.clearBtn {
+  padding: 0.3rem 0.625rem;
+  border-radius: 5px;
+  border: 1px solid #3b3b52;
+  background: transparent;
+  color: #64748b;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.clearBtn:hover {
+  color: #e2e8f0;
+  border-color: #64748b;
+}
+
+.uploadBtn {
+  padding: 0.3rem 0.875rem;
+  border-radius: 5px;
+  border: none;
+  background: #6366f1;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.uploadBtn:hover:not(:disabled) {
+  background: #4f46e5;
+}
+
+.uploadBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.removeBtn {
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  color: #475569;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.removeBtn:hover {
+  color: #ef4444;
+}
+
+/* ── Video Grid ── */
+.videoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.videoCard {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.75rem 0.875rem;
+  border-radius: 8px;
+  border: 1px solid #2a2a3a;
+  background: #16161e;
+  transition: border-color 0.15s;
+}
+
+.videoCard:hover {
+  border-color: #3b3b52;
+}
+
+.videoCardIcon {
+  color: #6366f1;
+  flex-shrink: 0;
+}
+
+.videoCardName {
+  flex: 1;
+  font-size: 0.8125rem;
+  color: #cbd5e1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.deleteBtn {
+  padding: 0.25rem;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  color: #475569;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color 0.15s;
+  display: flex;
+  align-items: center;
+}
+
+.deleteBtn:hover {
+  color: #ef4444;
+}
+
+/* ── Empty States ── */
+.empty {
+  text-align: center;
+  color: #475569;
+  font-size: 1rem;
+  padding: 4rem 2rem;
+}
+
+.emptySmall {
+  color: #475569;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+/* ── Spinner ── */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #2a2a3a;
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin: 0.5rem auto;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
