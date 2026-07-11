@@ -76,9 +76,9 @@ export default function Home() {
   if (seriesList.length === 0) {
     return (
       <div className={styles.loadingScreen}>
-        <p style={{ color: '#ef4444' }}>No series found.</p>
+        <p style={{ color: '#94a3b8', fontSize: '1rem' }}>No series yet.</p>
         <p style={{ color: '#475569', fontSize: '0.85rem' }}>
-          Add a folder inside the <code>Videos</code> directory at the project root.
+          Go to <a href="/admin" style={{ color: '#6366f1', textDecoration: 'underline' }}>/admin</a> to create a series and upload videos.
         </p>
       </div>
     );
