@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { upload } from '@vercel/blob/client';
 import styles from './admin.module.css';
 
 interface SeriesData {
@@ -93,48 +94,38 @@ export default function AdminPage() {
         setQueue(prev => [...prev, ...items]);
     };
 
-    // Upload with XHR for progress tracking
-    const uploadFile = (item: UploadItem, series: string): Promise<void> =>
-        new Promise((resolve) => {
-            const form = new FormData();
-            form.append('series', series);
-            form.append('file', item.file);
+    // Upload directly to Vercel Blob CDN (supports files up to 5GB)
+    const uploadFile = async (item: UploadItem, series: string): Promise<void> => {
+        try {
+            setQueue(prev =>
+                prev.map(q => q.file === item.file ? { ...q, status: 'uploading', progress: 0 } : q)
+            );
 
-            const xhr = new XMLHttpRequest();
-            xhr.open('POST', '/api/admin/upload');
-
-            xhr.upload.onprogress = (e) => {
-                if (e.lengthComputable) {
-                    const pct = Math.round((e.loaded / e.total) * 100);
+            await upload(`videos/${series}/${item.file.name}`, item.file, {
+                access: 'public',
+                handleUploadUrl: '/api/admin/upload',
+                onUploadProgress: ({ percentage }) => {
                     setQueue(prev =>
-                        prev.map(q => q.file === item.file ? { ...q, progress: pct, status: 'uploading' } : q)
+                        prev.map(q => q.file === item.file
+                            ? { ...q, progress: Math.round(percentage), status: 'uploading' }
+                            : q)
                     );
-                }
-            };
+                },
+            });
 
-            xhr.onload = () => {
-                const success = xhr.status >= 200 && xhr.status < 300;
-                setQueue(prev =>
-                    prev.map(q =>
-                        q.file === item.file
-                            ? { ...q, progress: 100, status: success ? 'done' : 'error', error: success ? undefined : 'Upload failed' }
-                            : q
-                    )
-                );
-                resolve();
-            };
-
-            xhr.onerror = () => {
-                setQueue(prev =>
-                    prev.map(q =>
-                        q.file === item.file ? { ...q, status: 'error', error: 'Network error' } : q
-                    )
-                );
-                resolve();
-            };
-
-            xhr.send(form);
-        });
+            setQueue(prev =>
+                prev.map(q => q.file === item.file
+                    ? { ...q, progress: 100, status: 'done' }
+                    : q)
+            );
+        } catch (err) {
+            setQueue(prev =>
+                prev.map(q => q.file === item.file
+                    ? { ...q, status: 'error', error: (err as Error).message || 'Upload failed' }
+                    : q)
+            );
+        }
+    };
 
     const startUpload = async () => {
         if (!uploadTarget || uploading) return;

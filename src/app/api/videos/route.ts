@@ -1,42 +1,25 @@
 import { NextResponse, NextRequest } from 'next/server';
-import fs from 'fs';
+import { list } from '@vercel/blob';
 import path from 'path';
-
-const VIDEOS_ROOT = path.join(process.cwd(), '..', 'Videos');
-const LEGACY_DIR = path.join(process.cwd(), '..', 'ExampleVideos');
 
 const VIDEO_EXTS = new Set(['.mp4', '.mkv', '.avi', '.mov', '.webm']);
 
-function getSeries(): string[] {
-  const series: string[] = [];
-
-  // New multi-series Videos folder
-  if (fs.existsSync(VIDEOS_ROOT)) {
-    const entries = fs.readdirSync(VIDEOS_ROOT, { withFileTypes: true });
-    for (const e of entries) {
-      if (e.isDirectory()) series.push(e.name);
-    }
+async function getSeries(): Promise<string[]> {
+  const { blobs } = await list({ prefix: 'videos/' });
+  const series = new Set<string>();
+  for (const blob of blobs) {
+    const rel = blob.pathname.replace(/^videos\//, '');
+    const folder = rel.split('/')[0];
+    if (folder) series.add(folder);
   }
-
-  // Legacy ExampleVideos folder (kept for backwards compatibility)
-  if (fs.existsSync(LEGACY_DIR)) {
-    series.push('ExampleVideos');
-  }
-
-  return series;
+  return [...series].sort();
 }
 
-function getVideos(seriesName: string): string[] {
-  const dir =
-    seriesName === 'ExampleVideos'
-      ? LEGACY_DIR
-      : path.join(VIDEOS_ROOT, seriesName);
-
-  if (!fs.existsSync(dir)) return [];
-
-  return fs
-    .readdirSync(dir)
-    .filter(f => VIDEO_EXTS.has(path.extname(f).toLowerCase()));
+async function getVideos(seriesName: string): Promise<string[]> {
+  const { blobs } = await list({ prefix: `videos/${seriesName}/` });
+  return blobs
+    .map(b => b.pathname.split('/').pop()!)
+    .filter(f => f && f !== '.keep' && VIDEO_EXTS.has(path.extname(f).toLowerCase()));
 }
 
 export async function GET(request: NextRequest) {
@@ -44,12 +27,10 @@ export async function GET(request: NextRequest) {
     const series = request.nextUrl.searchParams.get('series');
 
     if (series) {
-      // Return video list for a specific series
-      const videos = getVideos(series);
+      const videos = await getVideos(series);
       return NextResponse.json({ videos });
     } else {
-      // Return list of all series
-      const seriesList = getSeries();
+      const seriesList = await getSeries();
       return NextResponse.json({ series: seriesList });
     }
   } catch (error) {

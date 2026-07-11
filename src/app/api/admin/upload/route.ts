@@ -1,41 +1,36 @@
+import { handleUpload, type HandleUploadBody } from '@vercel/blob/multipart';
 import { NextResponse, NextRequest } from 'next/server';
-import fs from 'fs';
-import path from 'path';
 
-const VIDEOS_ROOT = path.join(process.cwd(), '..', 'Videos');
+// POST /api/admin/upload — handles token generation for client-side Vercel Blob uploads
+// The client calls upload() from @vercel/blob/client, which calls this endpoint for auth tokens
+export async function POST(request: NextRequest): Promise<NextResponse> {
+  const body = (await request.json()) as HandleUploadBody;
 
-export const config = {
-    api: { bodyParser: false },
-};
+  try {
+    const jsonResponse = await handleUpload({
+      body,
+      request,
+      onBeforeGenerateToken: async (pathname) => {
+        // Allow video file uploads up to 5GB
+        return {
+          allowedContentTypes: [
+            'video/mp4',
+            'video/webm',
+            'video/quicktime',
+            'video/x-msvideo',
+            'video/x-matroska',
+            'video/*',
+          ],
+          maximumSizeInBytes: 5 * 1024 * 1024 * 1024, // 5 GB
+        };
+      },
+      onUploadCompleted: async ({ blob }) => {
+        console.log('Upload completed:', blob.url, blob.pathname);
+      },
+    });
 
-// POST /api/admin/upload — upload a video file to a series
-export async function POST(request: NextRequest) {
-    try {
-        const formData = await request.formData();
-        const series = formData.get('series') as string | null;
-        const file = formData.get('file') as File | null;
-
-        if (!series || !file) {
-            return NextResponse.json({ error: 'Missing series or file' }, { status: 400 });
-        }
-
-        // Security: disallow path traversal
-        if (series.includes('..') || series.includes('/') || series.includes('\\')) {
-            return NextResponse.json({ error: 'Invalid series name' }, { status: 400 });
-        }
-
-        const seriesDir = path.join(VIDEOS_ROOT, series);
-        fs.mkdirSync(seriesDir, { recursive: true });
-
-        const filename = path.basename(file.name); // strip any path from the name
-        const destPath = path.join(seriesDir, filename);
-
-        const buffer = Buffer.from(await file.arrayBuffer());
-        fs.writeFileSync(destPath, buffer);
-
-        return NextResponse.json({ success: true, filename });
-    } catch (err) {
-        console.error('Upload error:', err);
-        return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
-    }
+    return NextResponse.json(jsonResponse);
+  } catch (error) {
+    return NextResponse.json({ error: (error as Error).message }, { status: 400 });
+  }
 }
